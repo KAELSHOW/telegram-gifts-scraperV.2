@@ -1,48 +1,51 @@
-const { Actor } = require('apify');
-const axios = require('axios');
-const cheerio = require('cheerio');
+import { Actor, PlaywrightCrawler } from "apify";
 
-Actor.main(async () => {
+await Actor.main(async () => {
     const input = await Actor.getInput();
-
-    // параметры из INPUT_SCHEMA.json
     const {
-        telegramUrl = "https://telegram.org/gifts",
+        fragmentUrl = "https://fragment.com/gifts",
         maxItems = 50,
         includeRare = true,
         saveImages = false,
         outputFormat = "json"
-    } = input || {};
+    } = input;
 
-    Actor.log.info(`Собираем подарки с: ${telegramUrl}`);
+    Actor.log.info(`Открываю ${fragmentUrl}...`);
 
-    // Загружаем страницу
-    const { data: html } = await axios.get(telegramUrl);
-    const $ = cheerio.load(html);
+    const crawler = new PlaywrightCrawler({
+        maxRequestsPerCrawl: 1,
+        async requestHandler({ page }) {
+            await page.goto(fragmentUrl, { waitUntil: "networkidle" });
 
-    const results = [];
+            // ждём карточки подарков
+            await page.waitForSelector(".gift-item, .TableRow");
 
-    $(".gift_card").each((i, el) => {
-        if (i >= maxItems) return false; // ограничение
+            const gifts = await page.$$eval(".gift-item, .TableRow", (els, opts) => {
+                const results = [];
+                for (let i = 0; i < els.length && results.length < opts.maxItems; i++) {
+                    const el = els[i];
+                    const name = el.querySelector(".gift-name, .ItemLotTitle")?.innerText.trim();
+                    const price = el.querySelector(".gift-price, .ItemLotPrice")?.innerText.trim();
+                    const rarity = el.querySelector(".gift-rarity")?.innerText.trim() || "обычный";
+                    const img = el.querySelector("img")?.src;
 
-        const name = $(el).find(".gift_name").text().trim();
-        const price = $(el).find(".gift_price").text().trim();
-        const rarity = $(el).find(".gift_rarity").text().trim();
-        const img = $(el).find("img").attr("src");
+                    if (!opts.includeRare && rarity.toLowerCase().includes("rare")) continue;
 
-        // фильтр: исключаем редкие, если includeRare = false
-        if (!includeRare && rarity.toLowerCase() === "rare") return;
+                    results.push({
+                        name,
+                        price,
+                        rarity,
+                        image: opts.saveImages ? img : undefined,
+                    });
+                }
+                return results;
+            }, { includeRare, saveImages, maxItems });
 
-        results.push({
-            name,
-            price,
-            rarity,
-            image: saveImages ? img : undefined,
-            url: telegramUrl
-        });
+            Actor.log.info(`Собрано ${gifts.length} подарков`);
+            await Actor.pushData(gifts);
+            await Actor.setValue("OUTPUT", gifts);
+        }
     });
 
-    await Actor.pushData(results);
-
-    Actor.log.info(`✅ Собрано ${results.length} подарков`);
+    await crawler.run([{ url: fragmentUrl }]);
 });
