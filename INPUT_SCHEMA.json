@@ -1,13 +1,13 @@
 {
-  "title": "Telegram Gifts Scraper",
+  "title": "Fragment Gifts Scraper",
   "type": "object",
   "schemaVersion": 1,
   "properties": {
-    "telegramUrl": {
-      "title": "Telegram Gifts URL",
+    "fragmentUrl": {
+      "title": "Fragment URL",
       "type": "string",
-      "description": "Ссылка на страницу с подарками Telegram (по умолчанию https://telegram.org/gifts)",
-      "default": "https://telegram.org/gifts",
+      "description": "Ссылка на страницу с подарками Fragment",
+      "default": "https://fragment.com/gifts",
       "editor": "textfield"
     },
     "maxItems": {
@@ -29,18 +29,18 @@
     "saveImages": {
       "title": "Сохранять изображения?",
       "type": "boolean",
-      "description": "Сохранять ссылки на изображения подарков в Dataset",
+      "description": "Сохранять ссылки на изображения подарков",
       "default": false,
       "editor": "checkbox"
     },
     "outputFormat": {
       "title": "Формат вывода",
       "type": "string",
-      "description": "В каком формате сохранить результат (json, csv)",
+      "description": "В каком формате сохранить результат",
       "default": "json",
       "enum": ["json", "csv"],
       "editor": "select"
     }
   },
-  "required": ["telegramUrl"]
+  "required": ["fragmentUrl"]
 }
