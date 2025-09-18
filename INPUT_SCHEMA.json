@@ -4,40 +4,42 @@
   "schemaVersion": 1,
   "properties": {
     "telegramUrl": {
-      "title": "Telegram URL",
+      "title": "Telegram Gifts URL",
       "type": "string",
-      "description": "Ссылка на страницу с NFT-подарками или Telegram Gifts",
-      "editor": "textfield",
-      "default": "https://telegram.org/gifts"
+      "description": "Ссылка на страницу с подарками Telegram (по умолчанию https://telegram.org/gifts)",
+      "default": "https://telegram.org/gifts",
+      "editor": "textfield"
     },
     "maxItems": {
-      "title": "Максимальное количество элементов",
+      "title": "Максимум подарков",
       "type": "integer",
-      "description": "Сколько подарков нужно собрать (0 = все)",
-      "editor": "number",
-      "default": 0
+      "description": "Сколько подарков собрать за один запуск",
+      "default": 50,
+      "minimum": 1,
+      "maximum": 500,
+      "editor": "number"
     },
     "includeRare": {
-      "title": "Собирать редкие подарки",
+      "title": "Включать редкие подарки?",
       "type": "boolean",
-      "description": "Если включено, будут собраны и редкие подарки",
-      "editor": "checkbox",
-      "default": true
+      "description": "Если выключить, редкие подарки не будут собираться",
+      "default": true,
+      "editor": "checkbox"
     },
     "saveImages": {
-      "title": "Сохранять картинки подарков",
+      "title": "Сохранять изображения?",
       "type": "boolean",
-      "description": "Сохранять ли изображения подарков в результатах",
-      "editor": "checkbox",
-      "default": true
+      "description": "Сохранять ссылки на изображения подарков в Dataset",
+      "default": false,
+      "editor": "checkbox"
     },
     "outputFormat": {
       "title": "Формат вывода",
       "type": "string",
-      "description": "Формат результата (json, csv или excel)",
-      "editor": "select",
-      "enum": ["json", "csv", "excel"],
-      "default": "json"
+      "description": "В каком формате сохранить результат (json, csv)",
+      "default": "json",
+      "enum": ["json", "csv"],
+      "editor": "select"
     }
   },
   "required": ["telegramUrl"]
