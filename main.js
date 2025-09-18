@@ -8,26 +8,27 @@ await Actor.main(async () => {
         includeRare = true,
         saveImages = false,
         outputFormat = "json"
-    } = input;
+    } = input || {};
 
-    Actor.log.info(`Открываю ${fragmentUrl}...`);
+    Actor.log.info(`Запуск скрейпера: ${fragmentUrl}`);
 
     const crawler = new PlaywrightCrawler({
         maxRequestsPerCrawl: 1,
         async requestHandler({ page }) {
+            Actor.log.info("Открываю страницу...");
             await page.goto(fragmentUrl, { waitUntil: "networkidle" });
 
-            // ждём карточки подарков
-            await page.waitForSelector(".gift-item, .TableRow");
+            Actor.log.info("Жду появления карточек...");
+            await page.waitForSelector(".TableRow", { timeout: 30000 });
 
-            const gifts = await page.$$eval(".gift-item, .TableRow", (els, opts) => {
+            const gifts = await page.$$eval(".TableRow", (rows, opts) => {
                 const results = [];
-                for (let i = 0; i < els.length && results.length < opts.maxItems; i++) {
-                    const el = els[i];
-                    const name = el.querySelector(".gift-name, .ItemLotTitle")?.innerText.trim();
-                    const price = el.querySelector(".gift-price, .ItemLotPrice")?.innerText.trim();
-                    const rarity = el.querySelector(".gift-rarity")?.innerText.trim() || "обычный";
-                    const img = el.querySelector("img")?.src;
+                for (let i = 0; i < rows.length && results.length < opts.maxItems; i++) {
+                    const row = rows[i];
+                    const name = row.querySelector(".ItemLotTitle")?.innerText.trim();
+                    const price = row.querySelector(".ItemLotPrice")?.innerText.trim();
+                    const rarity = row.querySelector(".gift-rarity")?.innerText.trim() || "обычный";
+                    const img = row.querySelector("img")?.src;
 
                     if (!opts.includeRare && rarity.toLowerCase().includes("rare")) continue;
 
@@ -41,7 +42,7 @@ await Actor.main(async () => {
                 return results;
             }, { includeRare, saveImages, maxItems });
 
-            Actor.log.info(`Собрано ${gifts.length} подарков`);
+            Actor.log.info(`Собрано подарков: ${gifts.length}`);
             await Actor.pushData(gifts);
             await Actor.setValue("OUTPUT", gifts);
         }
