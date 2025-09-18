@@ -1,0 +1,8 @@
+{
+  "name": "telegram-gifts-scraper",
+  "version": "1.0.0",
+  "buildTag": "latest",
+  "env": {
+    "NODE_VERSION": "20"
+  }
+}
