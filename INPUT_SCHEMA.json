@@ -1,46 +1,43 @@
 {
-  "title": "Fragment Gifts Scraper",
+  "title": "Telegram Gifts Scraper",
   "type": "object",
   "schemaVersion": 1,
   "properties": {
     "fragmentUrl": {
       "title": "Fragment URL",
       "type": "string",
-      "description": "Ссылка на страницу с подарками Fragment",
+      "description": "Ссылка на страницу Fragment с подарками",
       "default": "https://fragment.com/gifts",
       "editor": "textfield"
     },
     "maxItems": {
       "title": "Максимум подарков",
       "type": "integer",
-      "description": "Сколько подарков собрать за один запуск",
+      "description": "Сколько подарков собрать",
       "default": 50,
-      "minimum": 1,
-      "maximum": 500,
       "editor": "number"
     },
     "includeRare": {
-      "title": "Включать редкие подарки?",
+      "title": "Включать редкие?",
       "type": "boolean",
-      "description": "Если выключить, редкие подарки не будут собираться",
+      "description": "Собирать ли редкие подарки",
       "default": true,
       "editor": "checkbox"
     },
     "saveImages": {
-      "title": "Сохранять изображения?",
+      "title": "Сохранять картинки?",
       "type": "boolean",
-      "description": "Сохранять ссылки на изображения подарков",
+      "description": "Добавлять ли ссылки на изображения подарков",
       "default": false,
       "editor": "checkbox"
     },
     "outputFormat": {
       "title": "Формат вывода",
       "type": "string",
-      "description": "В каком формате сохранить результат",
+      "description": "Формат сохранённых данных",
       "default": "json",
-      "enum": ["json", "csv"],
-      "editor": "select"
+      "editor": "select",
+      "enum": ["json", "csv", "xlsx"]
     }
-  },
-  "required": ["fragmentUrl"]
+  }
 }
