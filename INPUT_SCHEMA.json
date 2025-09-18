@@ -1,12 +1,43 @@
 {
-  "title": "Telegram gifts scraper",
+  "title": "Telegram Gifts Scraper",
   "type": "object",
   "schemaVersion": 1,
   "properties": {
     "telegramUrl": {
       "title": "Telegram URL",
       "type": "string",
-      "description": "Ссылка на канал или чат Telegram для сбора данных"
+      "description": "Ссылка на страницу с NFT-подарками или Telegram Gifts",
+      "editor": "textfield",
+      "default": "https://telegram.org/gifts"
+    },
+    "maxItems": {
+      "title": "Максимальное количество элементов",
+      "type": "integer",
+      "description": "Сколько подарков нужно собрать (0 = все)",
+      "editor": "number",
+      "default": 0
+    },
+    "includeRare": {
+      "title": "Собирать редкие подарки",
+      "type": "boolean",
+      "description": "Если включено, будут собраны и редкие подарки",
+      "editor": "checkbox",
+      "default": true
+    },
+    "saveImages": {
+      "title": "Сохранять картинки подарков",
+      "type": "boolean",
+      "description": "Сохранять ли изображения подарков в результатах",
+      "editor": "checkbox",
+      "default": true
+    },
+    "outputFormat": {
+      "title": "Формат вывода",
+      "type": "string",
+      "description": "Формат результата (json, csv или excel)",
+      "editor": "select",
+      "enum": ["json", "csv", "excel"],
+      "default": "json"
     }
   },
   "required": ["telegramUrl"]
