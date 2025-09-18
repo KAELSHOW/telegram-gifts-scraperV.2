@@ -1,6 +1,6 @@
-import { Actor, PlaywrightCrawler } from "apify";
+const { Actor, PlaywrightCrawler } = require("apify");
 
-await Actor.main(async () => {
+Actor.main(async () => {
     const input = await Actor.getInput();
     const {
         fragmentUrl = "https://fragment.com/gifts",
@@ -15,10 +15,8 @@ await Actor.main(async () => {
     const crawler = new PlaywrightCrawler({
         maxRequestsPerCrawl: 1,
         async requestHandler({ page }) {
-            Actor.log.info("Открываю страницу...");
             await page.goto(fragmentUrl, { waitUntil: "networkidle" });
 
-            Actor.log.info("Жду появления карточек...");
             await page.waitForSelector(".TableRow", { timeout: 30000 });
 
             const gifts = await page.$$eval(".TableRow", (rows, opts) => {
@@ -42,7 +40,6 @@ await Actor.main(async () => {
                 return results;
             }, { includeRare, saveImages, maxItems });
 
-            Actor.log.info(`Собрано подарков: ${gifts.length}`);
             await Actor.pushData(gifts);
             await Actor.setValue("OUTPUT", gifts);
         }
