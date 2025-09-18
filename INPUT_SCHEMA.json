@@ -1,0 +1,13 @@
+{
+  title Telegram gifts scraper,
+  type object,
+  schemaVersion 1,
+  properties {
+    telegramUrl {
+      title Telegram URL,
+      type string,
+      description Ссылка на канал или чат Telegram для сбора данных
+    }
+  },
+  required [telegramUrl]
+}
